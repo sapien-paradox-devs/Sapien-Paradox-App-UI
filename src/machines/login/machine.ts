@@ -1,7 +1,21 @@
 import { assign, createMachine, fromPromise } from "xstate";
+import type { User } from "../app/types";
+
+export interface LoginContext {
+  email: string;
+  password: string;
+  error: string | null;
+  user?: User;
+}
+
+export type LoginEvent = { type: "SUBMIT"; email: string; password: string };
 
 export const loginMachine = createMachine({
   id: "login",
+  types: {} as {
+    context: LoginContext;
+    events: LoginEvent;
+  },
   initial: "checkingAuth",
   context: {
     email: "",
@@ -19,7 +33,7 @@ export const loginMachine = createMachine({
         onDone: {
           target: "authenticated",
           actions: assign({
-            user: ({ event }) => event.output,
+            user: ({ event }: { event: any }) => event.output,
           }),
         },
         onError: "idle",
@@ -32,8 +46,8 @@ export const loginMachine = createMachine({
     },
     submitting: {
       invoke: {
-        src: fromPromise(async ({ event }) => {
-          const { email, password } = event;
+        src: fromPromise(async ({ input }: { input: LoginEvent }) => {
+          const { email, password } = input;
           const res = await fetch("/api/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -45,16 +59,17 @@ export const loginMachine = createMachine({
           }
           return res.json();
         }),
+        input: ({ event }) => event as LoginEvent,
         onDone: {
           target: "authenticated",
           actions: assign({
-            user: ({ event }) => event.output,
+            user: ({ event }: { event: any }) => event.output,
           }),
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: ({ event }) => event.error.message,
+            error: ({ event }: { event: any }) => (event.error as Error).message,
           }),
         },
       },

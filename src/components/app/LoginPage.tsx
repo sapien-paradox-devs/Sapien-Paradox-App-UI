@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMachine } from "@xstate/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { locale } from "../../lib/locale";
@@ -10,13 +10,13 @@ interface LoginPageProps {
 }
 
 export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
-  const [state, send] = useMachine(loginMachine, {
-    onDone: ({ event }) => {
-      if (event.output) {
-        onSuccess(event.output);
-      }
-    },
-  });
+  const [state, send] = useMachine(loginMachine);
+
+  useEffect(() => {
+    if (state.matches("authenticated")) {
+      onSuccess(state.context.user);
+    }
+  }, [state, onSuccess]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,7 +44,7 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
             exit={{ opacity: 0 }}
             className="login-loader"
           >
-            <p>{locale("shards.viewer.loading")}</p>
+            <p>{locale("shards.viewer.loading") as string}</p>
           </motion.div>
         ) : (
           <motion.div
@@ -55,34 +55,34 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
             className="login-form-container"
           >
             <header>
-              <p className="app-login-eyebrow">{locale("app.login.eyebrow")}</p>
-              <h1>{locale("app.login.title")}</h1>
-              <p className="login-subtitle">{locale("app.login.subtitle")}</p>
+              <p className="app-login-eyebrow">{locale("app.login.eyebrow") as string}</p>
+              <h1>{locale("app.login.title") as string}</h1>
+              <p className="login-subtitle">{locale("app.login.subtitle") as string}</p>
             </header>
 
             <form onSubmit={handleSubmit} className="app-login-form">
               <div className="form-group">
-                <label htmlFor="email">{locale("app.login.emailLabel")}</label>
+                <label htmlFor="email">{locale("app.login.emailLabel") as string}</label>
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={locale("app.login.emailPlaceholder")}
+                  placeholder={locale("app.login.emailPlaceholder") as string}
                   required
                   disabled={isSubmitting}
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="password">{locale("app.login.passwordLabel")}</label>
+                <label htmlFor="password">{locale("app.login.passwordLabel") as string}</label>
                 <div className="password-input-wrapper">
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder={locale("app.login.passwordPlaceholder")}
+                    placeholder={locale("app.login.passwordPlaceholder") as string}
                     required
                     disabled={isSubmitting}
                   />
@@ -116,7 +116,7 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
                 className="btn-primary login-submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? locale("app.login.signingIn") : locale("app.login.submitButton")}
+                {isSubmitting ? (locale("app.login.signingIn") as string) : (locale("app.login.submitButton") as string)}
               </button>
             </form>
 
@@ -129,7 +129,7 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M11 7H3M6 4L3 7l3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              {locale("app.login.backToLanding")}
+              {locale("app.login.backToLanding") as string}
             </button>
           </motion.div>
         )}
