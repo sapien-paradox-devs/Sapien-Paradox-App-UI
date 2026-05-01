@@ -38,7 +38,7 @@ export const AppShell = () => {
         {state.matches("login") && (
           <motion.div key="login" {...pageTransition}>
             <LoginPage
-              onSubmit={(targetRole) => send({ type: "LOGIN", role: targetRole })}
+              onSuccess={(userData) => send({ type: "LOGIN_SUCCESS", data: userData })}
               onCancel={() => send({ type: "RETURN_TO_LANDING" })}
             />
           </motion.div>
@@ -47,7 +47,7 @@ export const AppShell = () => {
         {state.matches("user.profile") && (
           <motion.div key="profile" {...pageTransition}>
             <ProfileView
-              role={state.context.userRole}
+              user={state.context.user}
               onReadingRoom={() => send({ type: "VIEW_READING_ROOM" })}
               onAdminView={() => send({ type: "VIEW_ADMIN" })}
               onLogout={() => send({ type: "LOGOUT" })}

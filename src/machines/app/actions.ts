@@ -4,11 +4,13 @@ const spawnLandingMachine = assign(({ context }) => {
   return { landingRef: context.landingRef ?? true };
 });
 
-const setUserRole = assign(({ event }) => {
-  return { userRole: event.role };
+const setUserData = assign(({ event }) => {
+  // Handle both actor onDone and external LOGIN_SUCCESS event
+  const userData = event.output?.user || event.data?.user || event.output || event.data;
+  return { user: userData };
 });
 
 export const actions = {
   spawnLandingMachine,
-  setUserRole,
+  setUserData,
 };

@@ -104,8 +104,16 @@ export const labels = {
     login: {
       eyebrow: "Gateway",
       title: "Continue to your Sapien workspace",
-      subtitle: "Select how you want to sign in so we can tune the experience.",
+      subtitle: "Enter your credentials to tune into your rhythm.",
+      emailLabel: "Email",
+      emailPlaceholder: "sapien@paradox.io",
+      passwordLabel: "Password",
+      passwordPlaceholder: "••••••••",
+      submitButton: "Sign in",
+      signingIn: "Tuning in...",
       backToLanding: "Back to landing",
+      errorInvalid: "Invalid credentials. Please check your rhythm.",
+      errorGeneric: "Couldn't sign in, try again.",
       roles: {
         reader: {
           title: "Reader",

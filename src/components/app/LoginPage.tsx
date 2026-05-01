@@ -1,76 +1,139 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { useMachine } from "@xstate/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { locale } from "../../lib/locale";
+import { loginMachine } from "../../machines/login";
 
 interface LoginPageProps {
-  onSubmit: (role: string) => void;
+  onSuccess: (user: any) => void;
   onCancel: () => void;
 }
 
-export const LoginPage = ({ onSubmit, onCancel }: LoginPageProps) => (
-  <section className="app-login-shell">
-    <div className="login-orb" />
-    <motion.header
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <p className="app-login-eyebrow">{locale("app.login.eyebrow")}</p>
-      <h1>{locale("app.login.title")}</h1>
-      <p className="login-subtitle">{locale("app.login.subtitle")}</p>
-    </motion.header>
-    <motion.div
-      className="app-login-actions"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <motion.button
-        type="button"
-        className="login-role-card"
-        onClick={() => onSubmit("customer")}
-        whileHover={{ y: -4, transition: { duration: 0.2 } }}
-        whileTap={{ scale: 0.98 }}
-      >
-        <span className="role-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M4 19V5a2 2 0 012-2h8l6 6v10a2 2 0 01-2 2H6a2 2 0 01-2-2z" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M14 3v6h6M8 13h8M8 17h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </span>
-        <strong>{locale("app.login.roles.reader.title")}</strong>
-        <span>{locale("app.login.roles.reader.description")}</span>
-      </motion.button>
-      <motion.button
-        type="button"
-        className="login-role-card login-role-admin"
-        onClick={() => onSubmit("admin")}
-        whileHover={{ y: -4, transition: { duration: 0.2 } }}
-        whileTap={{ scale: 0.98 }}
-      >
-        <span className="role-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-            <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-            <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-            <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-        </span>
-        <strong>{locale("app.login.roles.admin.title")}</strong>
-        <span>{locale("app.login.roles.admin.description")}</span>
-      </motion.button>
-    </motion.div>
-    <motion.button
-      type="button"
-      className="app-login-cancel"
-      onClick={onCancel}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.4 }}
-    >
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M11 7H3M6 4L3 7l3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-      {locale("app.login.backToLanding")}
-    </motion.button>
-  </section>
-);
+export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
+  const [state, send] = useMachine(loginMachine, {
+    onDone: ({ event }) => {
+      if (event.output) {
+        onSuccess(event.output);
+      }
+    },
+  });
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isSubmitting = state.matches("submitting");
+  const isChecking = state.matches("checkingAuth");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting || isChecking) return;
+    send({ type: "SUBMIT", email, password });
+  };
+
+  return (
+    <section className="app-login-shell">
+      <div className="login-orb" />
+      
+      <AnimatePresence>
+        {isChecking ? (
+          <motion.div 
+            key="checking"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="login-loader"
+          >
+            <p>{locale("shards.viewer.loading")}</p>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="form"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="login-form-container"
+          >
+            <header>
+              <p className="app-login-eyebrow">{locale("app.login.eyebrow")}</p>
+              <h1>{locale("app.login.title")}</h1>
+              <p className="login-subtitle">{locale("app.login.subtitle")}</p>
+            </header>
+
+            <form onSubmit={handleSubmit} className="app-login-form">
+              <div className="form-group">
+                <label htmlFor="email">{locale("app.login.emailLabel")}</label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={locale("app.login.emailPlaceholder")}
+                  required
+                  disabled={isSubmitting}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">{locale("app.login.passwordLabel")}</label>
+                <div className="password-input-wrapper">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder={locale("app.login.passwordPlaceholder")}
+                    required
+                    disabled={isSubmitting}
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+                        <line x1="1" y1="1" x2="23" y2="23" />
+                      </svg>
+                    ) : (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {state.context.error && (
+                <p className="login-error-message">{state.context.error}</p>
+              )}
+
+              <button 
+                type="submit" 
+                className="btn-primary login-submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? locale("app.login.signingIn") : locale("app.login.submitButton")}
+              </button>
+            </form>
+
+            <button
+              type="button"
+              className="app-login-cancel"
+              onClick={onCancel}
+              disabled={isSubmitting}
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M11 7H3M6 4L3 7l3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {locale("app.login.backToLanding")}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+};
