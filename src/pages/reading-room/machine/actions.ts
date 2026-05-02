@@ -24,7 +24,7 @@ const assignError = assign(({ event }) => ({
 
 const trackOpen = ({ context }: { context: any }) => {
   // Fire-and-forget POST /api/grants/:token/open. BE is idempotent on replay (T011a Q1).
-  void fetch(`http://localhost:8000/api/grants/${context.token}/open`, {
+  void fetch(`/api/grants/${context.token}/open`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
   }).catch(() => undefined);

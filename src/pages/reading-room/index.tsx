@@ -13,7 +13,7 @@ import "./ReadingRoom.css";
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 const STREAM_URL = (token: string) =>
-  `http://localhost:8000/api/shards/stream/?token=${encodeURIComponent(token)}`;
+  `/api/shards/stream/?token=${encodeURIComponent(token)}`;
 
 export const ReadingRoom = () => {
   const { token = "" } = useParams<{ token: string }>();

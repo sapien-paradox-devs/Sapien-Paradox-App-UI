@@ -1,7 +1,5 @@
 import { fromPromise } from "xstate";
 
-const API_BASE = "http://localhost:8000/api";
-
 class GrantFetchError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -11,7 +9,7 @@ class GrantFetchError extends Error {
 }
 
 const fetchGrantActor = fromPromise(async ({ input }: { input: { token: string } }) => {
-  const response = await fetch(`${API_BASE}/grants/${input.token}`, {
+  const response = await fetch(`/api/grants/${input.token}`, {
     headers: { Accept: "application/json" },
   });
   if (!response.ok) {
