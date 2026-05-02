@@ -6,7 +6,7 @@ import { labels } from "./labels";
  * @param params - Optional parameters to replace in the label (e.g., { name: "World" } for "Hello {{name}}")
  * @returns The label string or the path if not found.
  */
-export const locale = (path: string, params?: Record<string, string | number>): string | string[] | any[] | Record<string, any> => {
+export const locale = (path: string, params?: Record<string, string | number>): any => {
   const keys = path.split(".");
   let current: any = labels;
 

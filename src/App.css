@@ -1242,51 +1242,97 @@
   font-size: 0.95rem;
 }
 
-.app-login-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+.login-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--text-muted);
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.app-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   margin: 2rem 0;
 }
 
-.login-role-card {
+.form-group {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 0.5rem;
-  padding: 2rem 1.5rem;
-  border-radius: var(--radius-md);
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.form-group input {
+  padding: 0.75rem 1rem;
   background: var(--bg-glass);
   border: 1px solid var(--border-subtle);
+  border-radius: 8px;
   color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.password-input-wrapper input {
+  width: 100%;
+  padding-right: 3rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
   cursor: pointer;
-  text-align: center;
-  font-family: var(--font-body);
-  transition: border-color 0.2s ease;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
 }
 
-.login-role-card:hover {
-  border-color: var(--border-medium);
+.password-toggle:hover {
+  color: var(--text-primary);
 }
 
-.login-role-admin:hover {
-  border-color: var(--accent-violet);
+.login-error-message {
+  font-size: 0.85rem;
+  color: #ff4d4f;
+  margin: -0.5rem 0 0;
+  text-align: left;
 }
 
-.role-icon {
-  color: var(--accent-violet);
-  margin-bottom: 0.25rem;
-}
-
-.login-role-card strong {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-}
-
-.login-role-card span {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
+.login-submit {
+  width: 100%;
+  padding: 0.875rem;
+  font-weight: 600;
 }
 
 .app-login-cancel {

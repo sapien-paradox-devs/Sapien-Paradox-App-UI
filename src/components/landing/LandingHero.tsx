@@ -13,7 +13,7 @@ const textReveal = {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition: { delay: 0.15 * i, duration: 1, ease: [0.16, 1, 0.3, 1] },
+    transition: { delay: 0.15 * i, duration: 1, ease: [0.16, 1, 0.3, 1] as any },
   }),
 };
 
@@ -47,7 +47,7 @@ const Shard = ({ children, className, delay = 0 }: { children: React.ReactNode; 
       className={`hero-shard-v2 ${className}`}
       initial={{ opacity: 0, scale: 0.8, y: 60 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ delay: 0.8 + delay, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ delay: 0.8 + delay, duration: 1.2, ease: [0.16, 1, 0.3, 1] as any }}
       style={{ rotateX, rotateY, perspective: 1000 }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}

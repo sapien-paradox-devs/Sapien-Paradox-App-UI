@@ -1,3 +1,3 @@
-export const isAdmin = ({ context }) => {
-  return context.userRole === "admin";
+export const isAdmin = ({ context }: any) => {
+  return context.user?.role === "admin";
 };
