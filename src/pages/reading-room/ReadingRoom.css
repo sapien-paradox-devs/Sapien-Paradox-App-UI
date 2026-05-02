@@ -1,0 +1,78 @@
+.chamber-shell {
+  min-height: 100vh;
+  background: #0b0b10;
+  color: #e8e8ee;
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 1.5rem;
+  box-sizing: border-box;
+}
+
+.chamber-state-center {
+  justify-content: center;
+  text-align: center;
+  gap: 1.25rem;
+}
+
+.chamber-state-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.chamber-state-body {
+  font-size: 1rem;
+  opacity: 0.72;
+  max-width: 28rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.chamber-state-text {
+  font-size: 0.95rem;
+  opacity: 0.6;
+  letter-spacing: 0.04em;
+}
+
+.chamber-pulse {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #e8e8ee;
+  opacity: 0.55;
+  animation: chamber-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes chamber-pulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.35; }
+  50%      { transform: scale(1.15); opacity: 0.85; }
+}
+
+.chamber-pdf-shell {
+  padding-top: 1.5rem;
+  padding-bottom: 4rem;
+  align-items: center;
+}
+
+.chamber-page {
+  margin-bottom: 1.5rem;
+  background: #14141a;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.chamber-page canvas {
+  display: block;
+  max-width: 100%;
+  height: auto !important;
+}
+
+.chamber-sanctuary-footer {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.45;
+}
