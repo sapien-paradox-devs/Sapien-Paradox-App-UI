@@ -7,6 +7,7 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 
 import { machine } from "./machine";
 import { locale } from "../../lib/locale";
+import { Chatbot } from "./Chatbot";
 import "./ReadingRoom.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -34,13 +35,21 @@ export const ReadingRoom = () => {
   if (state.matches("error")) return <ChamberError variant="network" />;
   if (state.matches("sanctuary"))
     return (
-      <ChamberSanctuary
-        orderIndex={chapter?.orderIndex ?? 0}
-        bookTitle={chapter?.bookTitle ?? ""}
-      />
+      <>
+        <ChamberSanctuary
+          orderIndex={chapter?.orderIndex ?? 0}
+          bookTitle={chapter?.bookTitle ?? ""}
+        />
+        <Chatbot />
+      </>
     );
   // reading
-  return <ChamberPdf token={token} onLastPage={() => send({ type: "REACHED_LAST_PAGE" })} />;
+  return (
+    <>
+      <ChamberPdf token={token} onLastPage={() => send({ type: "REACHED_LAST_PAGE" })} />
+      <Chatbot />
+    </>
+  );
 };
 
 const ChamberLoading = () => (
