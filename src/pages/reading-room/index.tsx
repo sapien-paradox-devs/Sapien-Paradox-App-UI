@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMachine } from "@xstate/react";
 import { Document, Page, pdfjs } from "react-pdf";
-import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
@@ -10,7 +9,10 @@ import { machine } from "./machine";
 import { locale } from "../../lib/locale";
 import "./ReadingRoom.css";
 
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url
+).toString();
 
 const STREAM_URL = (token: string) =>
   `/api/shards/stream/?token=${encodeURIComponent(token)}`;
@@ -121,7 +123,7 @@ const ChamberPdf = ({
                 className="chamber-page"
                 ref={isLast ? lastPageRef : undefined}
               >
-                <Page pageNumber={pageNumber} renderAnnotationLayer={false} />
+                <Page pageNumber={pageNumber} renderAnnotationLayer={false} renderTextLayer={false} />
               </div>
             );
           })}
