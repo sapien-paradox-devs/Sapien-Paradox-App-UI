@@ -20,12 +20,13 @@ This repo is the **frontend**. The backend lives in a separate repo (`../backend
 - `src/lib/fetcher.ts`: `mappedFetcher` — accepts an optional mapper function for response transformation.
 - `src/pages/landing/machine/`: XState logic for the landing user flow.
 - `src/components/landing/`: High-fidelity "Ethereal Architect" UI components.
-- `src/pages/reading-room/` *(planned)*: Token-gated reading chamber at `/r/:token`. Renders one Shard via `react-pdf`, driven by its own XState machine. Spec lives in `plans/components/reading-room/` once the domain is in scope.
-- `src/pages/landing/ShardView.tsx` *(retiring)*: Legacy in-page PDF overlay. Replaced once `plans/components/reading-room/` is implemented.
+- `src/pages/reading-room/`: Token-gated reading chamber at `/r/:token`. Renders one Shard via `react-pdf`, driven by `readingRoomMachine` (5-file split). States: `idle → loading → reading → sanctuary` (happy path); `invalid`/`locked`/`error` are terminal error branches. Last-page detection via `IntersectionObserver` (threshold 0.5).
+- `src/pages/landing/ShardView.tsx` *(retiring)*: Legacy in-page PDF overlay. Replaced by `pages/reading-room/`; pending cleanup.
+- `src/components/app/user/ReadingRoomView.tsx` *(retiring)*: Mock reading-room view inside the in-app shell. Dead code; pending cleanup once auth flows route to `/r/:token` directly.
 
 ## Routes
 - `/`: Landing page (lead intake + book selection + pace).
-- `/r/:token`: Reading Room *(planned)*. Token-gated, single-Shard reading chamber.
+- `/r/:token`: Reading Room. Token-gated, single-Shard reading chamber. Token IS the auth — route does not require login (cross-cutting decision #10).
 - `/?book_id=<slug>`: Landing pre-filled with a book selection. Used by the expired-grant sanctuary screen as the "request a new grant" deep link.
 
 ## Key documents

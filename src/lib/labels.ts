@@ -165,5 +165,27 @@ export const labels = {
       },
       hint: "Pinch to zoom · Scroll to absorb"
     }
+  },
+  readingRoom: {
+    loading: "Manifesting the chamber...",
+    errors: {
+      invalid: {
+        title: "This link is invalid or expired.",
+        body: "The temporal window has closed. Request a fresh chapter from your profile."
+      },
+      locked: {
+        title: "This chapter unlocks soon.",
+        body: "Stay with the cadence. The next packet is on its way."
+      },
+      network: {
+        title: "Couldn't reach the chamber.",
+        body: "Try refreshing the page in a moment."
+      }
+    },
+    sanctuary: {
+      title: "You've finished Chapter {{orderIndex}}.",
+      body: "The next arrives on WhatsApp.",
+      bookFooter: "{{bookTitle}}"
+    }
   }
 };
