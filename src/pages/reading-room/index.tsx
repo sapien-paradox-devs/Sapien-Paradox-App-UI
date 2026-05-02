@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMachine } from "@xstate/react";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -87,23 +87,6 @@ const ChamberPdf = ({
   onLastPage: () => void;
 }) => {
   const [numPages, setNumPages] = useState<number | null>(null);
-  const lastPageRef = useRef<HTMLDivElement | null>(null);
-  const firedRef = useRef(false);
-
-  useEffect(() => {
-    if (!numPages || !lastPageRef.current || firedRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !firedRef.current) {
-          firedRef.current = true;
-          onLastPage();
-        }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(lastPageRef.current);
-    return () => observer.disconnect();
-  }, [numPages, onLastPage]);
 
   return (
     <div className="chamber-shell chamber-pdf-shell">
@@ -113,20 +96,23 @@ const ChamberPdf = ({
         loading={<ChamberLoading />}
         error={<ChamberError variant="network" />}
       >
-        {numPages !== null &&
-          Array.from({ length: numPages }).map((_, i) => {
-            const pageNumber = i + 1;
-            const isLast = pageNumber === numPages;
-            return (
-              <div
-                key={pageNumber}
-                className="chamber-page"
-                ref={isLast ? lastPageRef : undefined}
-              >
-                <Page pageNumber={pageNumber} renderAnnotationLayer={false} renderTextLayer={false} />
-              </div>
-            );
-          })}
+        {numPages !== null && (
+          <>
+            {Array.from({ length: numPages }).map((_, i) => {
+              const pageNumber = i + 1;
+              return (
+                <div key={pageNumber} className="chamber-page">
+                  <Page pageNumber={pageNumber} renderAnnotationLayer={false} renderTextLayer={false} />
+                </div>
+              );
+            })}
+            <div style={{ textAlign: "center", marginTop: "2rem" }}>
+              <button className="btn-primary" onClick={onLastPage}>
+                {locale("readingRoom.finish") as string}
+              </button>
+            </div>
+          </>
+        )}
       </Document>
     </div>
   );
