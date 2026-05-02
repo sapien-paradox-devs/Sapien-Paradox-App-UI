@@ -9,7 +9,7 @@ const shardVariants = {
     y: 0,
     scale: 1,
     filter: "blur(0px)",
-    transition: { delay: 0.12 * i, duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+    transition: { delay: 0.12 * i, duration: 0.8, ease: [0.16, 1, 0.3, 1] as any },
   }),
 };
 
@@ -47,7 +47,7 @@ export const ModularEngine = ({ pace = "steady" }: { pace?: string }) => {
         className="section-heading-centered"
         initial={{ opacity: 0, y: 30 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as any }}
       >
         <p className="section-eyebrow-glow">{locale("landingPage.modularEngine.eyebrow")}</p>
         <h2 className="glimmer-text">{locale("landingPage.modularEngine.title")}</h2>

@@ -1,5 +1,3 @@
-const API_BASE = "http://localhost:8000/api";
-
 export const submitLead = async ({ context }) => {
   const targetBook = context.books.find((book) => book.id === context.selectedBookId);
   const payload = {
@@ -11,7 +9,7 @@ export const submitLead = async ({ context }) => {
     notes: context.formValues.paceNotes ?? "",
   };
 
-  const response = await fetch(`${API_BASE}/leads/`, {
+  const response = await fetch(`/api/leads/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

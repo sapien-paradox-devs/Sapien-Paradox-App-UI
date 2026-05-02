@@ -11,8 +11,16 @@ import { AdminView } from "./user/AdminView";
 
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
-  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
+  animate: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } 
+  },
+  exit: { 
+    opacity: 0, 
+    y: -20, 
+    transition: { duration: 0.3 } 
+  },
 };
 
 export const AppShell = () => {
@@ -22,7 +30,7 @@ export const AppShell = () => {
     <main className="app-shell">
       <AnimatePresence mode="wait">
         {state.matches("landing") && (
-          <motion.div key="landing" {...pageTransition}>
+          <motion.div key="landing" {...(pageTransition as any)}>
             <div className="app-landing-actions">
               <button type="button" className="btn-ghost" onClick={() => send({ type: "GO_TO_LOGIN" })}>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -36,18 +44,18 @@ export const AppShell = () => {
         )}
 
         {state.matches("login") && (
-          <motion.div key="login" {...pageTransition}>
+          <motion.div key="login" {...(pageTransition as any)}>
             <LoginPage
-              onSubmit={(targetRole) => send({ type: "LOGIN", role: targetRole })}
+              onSuccess={(userData: any) => send({ type: "LOGIN_SUCCESS", data: userData })}
               onCancel={() => send({ type: "RETURN_TO_LANDING" })}
             />
           </motion.div>
         )}
 
         {state.matches("user.profile") && (
-          <motion.div key="profile" {...pageTransition}>
+          <motion.div key="profile" {...(pageTransition as any)}>
             <ProfileView
-              role={state.context.userRole}
+              user={(state.context as any).user}
               onReadingRoom={() => send({ type: "VIEW_READING_ROOM" })}
               onAdminView={() => send({ type: "VIEW_ADMIN" })}
               onLogout={() => send({ type: "LOGOUT" })}
@@ -56,13 +64,13 @@ export const AppShell = () => {
         )}
 
         {state.matches("user.readingRoom") && (
-          <motion.div key="readingRoom" {...pageTransition}>
+          <motion.div key="readingRoom" {...(pageTransition as any)}>
             <ReadingRoomView onProfile={() => send({ type: "VIEW_PROFILE" })} />
           </motion.div>
         )}
 
         {state.matches("user.admin") && (
-          <motion.div key="admin" {...pageTransition}>
+          <motion.div key="admin" {...(pageTransition as any)}>
             <AdminView
               onReadingRoom={() => send({ type: "VIEW_READING_ROOM" })}
               onProfile={() => send({ type: "VIEW_PROFILE" })}

@@ -1,11 +1,12 @@
 import { createMachine } from "xstate";
+import { machine as loginMachine } from "../login";
 
 export const appMachine = createMachine({
   id: "app",
   initial: "landing",
   context: {
     landingRef: undefined,
-    userRole: undefined,
+    user: undefined,
   },
   states: {
     landing: {
@@ -15,8 +16,19 @@ export const appMachine = createMachine({
       },
     },
     login: {
+      invoke: {
+        id: "loginActor",
+        src: loginMachine,
+        onDone: {
+          target: "user.profile",
+          actions: "setUserData",
+        },
+      },
       on: {
-        LOGIN: { target: "user.profile", actions: "setUserRole" },
+        LOGIN_SUCCESS: {
+          target: "user.profile",
+          actions: "setUserData",
+        },
         RETURN_TO_LANDING: "landing",
       },
     },

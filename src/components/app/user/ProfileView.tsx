@@ -2,13 +2,17 @@ import { motion } from "framer-motion";
 import { locale } from "../../../lib/locale";
 
 interface ProfileViewProps {
-  role?: string;
+  user?: {
+    email: string;
+    full_name: string;
+    role: string;
+  };
   onReadingRoom: () => void;
   onAdminView: () => void;
   onLogout: () => void;
 }
 
-export const ProfileView = ({ role, onReadingRoom, onAdminView, onLogout }: ProfileViewProps) => (
+export const ProfileView = ({ user, onReadingRoom, onAdminView, onLogout }: ProfileViewProps) => (
   <section className="app-view app-profile">
     <motion.header
       className="app-view-header"
@@ -18,15 +22,20 @@ export const ProfileView = ({ role, onReadingRoom, onAdminView, onLogout }: Prof
     >
       <p className="app-view-eyebrow">{locale("app.views.profile.eyebrow")}</p>
       <h2>
-        {role === "admin"
+        {user?.role === "admin"
           ? locale("app.views.profile.adminTitle")
           : locale("app.views.profile.readerTitle")}
       </h2>
       <p>
-        {role === "admin"
+        {user?.role === "admin"
           ? locale("app.views.profile.adminSubtitle")
           : locale("app.views.profile.readerSubtitle")}
       </p>
+      {user && (
+        <p className="user-welcome">
+          Welcome back, <strong>{user.full_name}</strong>
+        </p>
+      )}
     </motion.header>
     <motion.div
       className="profile-stats"
@@ -56,7 +65,7 @@ export const ProfileView = ({ role, onReadingRoom, onAdminView, onLogout }: Prof
       <button type="button" className="btn-primary" onClick={onReadingRoom}>
         {locale("app.views.common.openReadingRoom")}
       </button>
-      {role === "admin" && (
+      {user?.role === "admin" && (
         <button type="button" className="btn-secondary" onClick={onAdminView}>
           {locale("app.views.common.goToAdminView")}
         </button>
