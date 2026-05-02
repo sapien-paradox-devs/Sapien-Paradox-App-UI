@@ -1,4 +1,4 @@
-import { assign, createMachine, fromPromise } from "xstate";
+import { createMachine } from "xstate";
 
 export const loginMachine = createMachine({
   id: "login",
@@ -6,63 +6,44 @@ export const loginMachine = createMachine({
   context: {
     email: "",
     password: "",
-    error: null as string | null,
-    user: undefined as any,
+    errorKey: null as null | "errorInvalid" | "errorGeneric",
+    user: null as any,
+  },
+  on: {
+    UPDATE_EMAIL: { actions: "assignEmail" },
+    UPDATE_PASSWORD: { actions: "assignPassword" },
   },
   states: {
     checkingAuth: {
       invoke: {
-        src: fromPromise(async () => {
-          const res = await fetch("/api/profile/me");
-          if (!res.ok) throw new Error("Not authenticated");
-          return res.json();
-        }),
-        onDone: {
-          target: "authenticated",
-          actions: assign({
-            user: ({ event }: any) => event.output,
-          }),
-        },
+        src: "checkAuthActor",
+        onDone: { target: "authenticated", actions: "assignUser" },
         onError: "idle",
       },
     },
     idle: {
       on: {
-        SUBMIT: "submitting",
+        SUBMIT: { target: "submitting", actions: "clearError" },
       },
     },
     submitting: {
       invoke: {
-        src: fromPromise(async ({ input }: any) => {
-          const { email, password } = input;
-          const res = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-          });
-          if (!res.ok) {
-            const error = await res.json();
-            throw new Error(error.detail || "Invalid credentials");
-          }
-          return res.json();
-        }),
-        input: ({ event }: any) => event,
-        onDone: {
-          target: "authenticated",
-          actions: assign({
-            user: ({ event }: any) => event.output,
-          }),
-        },
-        onError: {
-          target: "idle",
-          actions: assign({
-            error: ({ event }: any) => event.error?.message || "Login failed",
-          }),
-        },
+        src: "loginActor",
+        input: ({ context }) => ({ email: context.email, password: context.password }),
+        onDone: { target: "authenticated", actions: "assignUser" },
+        onError: [
+          {
+            guard: "isInvalidCredentials",
+            target: "idle",
+            actions: ["assignErrorInvalid", "clearPassword"],
+          },
+          {
+            target: "idle",
+            actions: ["assignErrorGeneric", "clearPassword"],
+          },
+        ],
       },
     },
-    authenticated: {
-      type: "final",
-    },
+    authenticated: { type: "final" },
   },
 });

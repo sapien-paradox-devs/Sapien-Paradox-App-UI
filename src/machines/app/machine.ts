@@ -1,5 +1,5 @@
 import { createMachine } from "xstate";
-import { loginMachine } from "../login";
+import { machine as loginMachine } from "../login";
 
 export const appMachine = createMachine({
   id: "app",

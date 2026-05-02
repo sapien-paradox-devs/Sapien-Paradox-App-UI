@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useMachine } from "@xstate/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { locale } from "../../lib/locale";
-import { loginMachine } from "../../machines/login";
+import { machine } from "../../machines/login";
 
 interface LoginPageProps {
   onSuccess: (user: any) => void;
@@ -10,7 +10,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
-  const [state, send] = useMachine(loginMachine);
+  const [state, send] = useMachine(machine);
 
   useEffect(() => {
     if (state.matches("authenticated")) {
@@ -18,26 +18,25 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
     }
   }, [state, onSuccess]);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const isSubmitting = state.matches("submitting");
   const isChecking = state.matches("checkingAuth");
+  const { email, password, errorKey } = state.context;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting || isChecking) return;
-    send({ type: "SUBMIT", email, password } as any);
+    send({ type: "SUBMIT" });
   };
 
   return (
     <section className="app-login-shell">
       <div className="login-orb" />
-      
+
       <AnimatePresence>
         {isChecking ? (
-          <motion.div 
+          <motion.div
             key="checking"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -67,8 +66,10 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={locale("app.login.emailPlaceholder")}
+                  onChange={(e) =>
+                    send({ type: "UPDATE_EMAIL", email: e.target.value } as any)
+                  }
+                  placeholder={locale("app.login.emailPlaceholder") as string}
                   required
                   disabled={isSubmitting}
                 />
@@ -81,8 +82,10 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={locale("app.login.passwordPlaceholder")}
+                    onChange={(e) =>
+                      send({ type: "UPDATE_PASSWORD", password: e.target.value } as any)
+                    }
+                    placeholder={locale("app.login.passwordPlaceholder") as string}
                     required
                     disabled={isSubmitting}
                   />
@@ -107,12 +110,14 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
                 </div>
               </div>
 
-              {state.context.error && (
-                <p className="login-error-message">{state.context.error}</p>
+              {errorKey && (
+                <p className="login-error-message">
+                  {locale(`app.login.${errorKey}`) as string}
+                </p>
               )}
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="btn-primary login-submit"
                 disabled={isSubmitting}
               >
