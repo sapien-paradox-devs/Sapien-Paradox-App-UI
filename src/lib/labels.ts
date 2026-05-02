@@ -194,6 +194,7 @@ export const labels = {
       title: "You've finished Chapter {{orderIndex}}.",
       body: "The next arrives on WhatsApp.",
       bookFooter: "{{bookTitle}}"
-    }
+    },
+    finish: "Finish Chapter"
   }
 };
