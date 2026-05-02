@@ -28,7 +28,7 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting || isChecking) return;
-    send({ type: "SUBMIT", email, password });
+    send({ type: "SUBMIT", email, password } as any);
   };
 
   return (
@@ -44,45 +44,45 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
             exit={{ opacity: 0 }}
             className="login-loader"
           >
-            <p>{locale("shards.viewer.loading") as string}</p>
+            <p>{locale("shards.viewer.loading")}</p>
           </motion.div>
         ) : (
           <motion.div
             key="form"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] } as any}
             className="login-form-container"
           >
             <header>
-              <p className="app-login-eyebrow">{locale("app.login.eyebrow") as string}</p>
-              <h1>{locale("app.login.title") as string}</h1>
-              <p className="login-subtitle">{locale("app.login.subtitle") as string}</p>
+              <p className="app-login-eyebrow">{locale("app.login.eyebrow")}</p>
+              <h1>{locale("app.login.title")}</h1>
+              <p className="login-subtitle">{locale("app.login.subtitle")}</p>
             </header>
 
             <form onSubmit={handleSubmit} className="app-login-form">
               <div className="form-group">
-                <label htmlFor="email">{locale("app.login.emailLabel") as string}</label>
+                <label htmlFor="email">{locale("app.login.emailLabel")}</label>
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={locale("app.login.emailPlaceholder") as string}
+                  placeholder={locale("app.login.emailPlaceholder")}
                   required
                   disabled={isSubmitting}
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="password">{locale("app.login.passwordLabel") as string}</label>
+                <label htmlFor="password">{locale("app.login.passwordLabel")}</label>
                 <div className="password-input-wrapper">
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder={locale("app.login.passwordPlaceholder") as string}
+                    placeholder={locale("app.login.passwordPlaceholder")}
                     required
                     disabled={isSubmitting}
                   />
@@ -116,7 +116,7 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
                 className="btn-primary login-submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? (locale("app.login.signingIn") as string) : (locale("app.login.submitButton") as string)}
+                {isSubmitting ? locale("app.login.signingIn") : locale("app.login.submitButton")}
               </button>
             </form>
 
@@ -129,7 +129,7 @@ export const LoginPage = ({ onSuccess, onCancel }: LoginPageProps) => {
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M11 7H3M6 4L3 7l3 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              {locale("app.login.backToLanding") as string}
+              {locale("app.login.backToLanding")}
             </button>
           </motion.div>
         )}

@@ -1,5 +1,3 @@
-import { MachineContext } from "./types";
-
-export const isAdmin = ({ context }: { context: MachineContext }) => {
+export const isAdmin = ({ context }: any) => {
   return context.user?.role === "admin";
 };

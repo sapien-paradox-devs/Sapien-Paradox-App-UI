@@ -1,26 +1,13 @@
 import { assign, createMachine, fromPromise } from "xstate";
-import type { User } from "../app/types";
-
-export interface LoginContext {
-  email: string;
-  password: string;
-  error: string | null;
-  user?: User;
-}
-
-export type LoginEvent = { type: "SUBMIT"; email: string; password: string };
 
 export const loginMachine = createMachine({
   id: "login",
-  types: {} as {
-    context: LoginContext;
-    events: LoginEvent;
-  },
   initial: "checkingAuth",
   context: {
     email: "",
     password: "",
-    error: null,
+    error: null as string | null,
+    user: undefined as any,
   },
   states: {
     checkingAuth: {
@@ -33,7 +20,7 @@ export const loginMachine = createMachine({
         onDone: {
           target: "authenticated",
           actions: assign({
-            user: ({ event }: { event: any }) => event.output,
+            user: ({ event }: any) => event.output,
           }),
         },
         onError: "idle",
@@ -46,7 +33,7 @@ export const loginMachine = createMachine({
     },
     submitting: {
       invoke: {
-        src: fromPromise(async ({ input }: { input: LoginEvent }) => {
+        src: fromPromise(async ({ input }: any) => {
           const { email, password } = input;
           const res = await fetch("/api/auth/login", {
             method: "POST",
@@ -59,17 +46,17 @@ export const loginMachine = createMachine({
           }
           return res.json();
         }),
-        input: ({ event }) => event as LoginEvent,
+        input: ({ event }: any) => event,
         onDone: {
           target: "authenticated",
           actions: assign({
-            user: ({ event }: { event: any }) => event.output,
+            user: ({ event }: any) => event.output,
           }),
         },
         onError: {
           target: "idle",
           actions: assign({
-            error: ({ event }: { event: any }) => (event.error as Error).message,
+            error: ({ event }: any) => event.error?.message || "Login failed",
           }),
         },
       },

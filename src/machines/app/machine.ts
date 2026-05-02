@@ -1,13 +1,8 @@
 import { createMachine } from "xstate";
 import { loginMachine } from "../login";
-import type { MachineContext, AppEvent } from "./types";
 
 export const appMachine = createMachine({
   id: "app",
-  types: {} as {
-    context: MachineContext;
-    events: AppEvent;
-  },
   initial: "landing",
   context: {
     landingRef: undefined,
